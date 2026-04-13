@@ -83,23 +83,15 @@ export function useCrowdData() {
     alerts: [],
   }));
 
-  // Simulate data updates
+  // Only simulate data when media is uploaded
   useEffect(() => {
     const interval = setInterval(() => {
-      const currentCount = Math.floor(80 + Math.random() * 200);
       setData(prev => ({
         ...prev,
-        peopleCount: currentCount,
-        instantCount: currentCount,
-        uniqueCount: Math.floor(currentCount * 0.8),
-        harmfulObjectCount: Math.floor(Math.random() * 3),
-        harmfulObjectLabels: ['knife', 'weapon'].slice(0, Math.floor(Math.random() * 3)),
-        frameVersion: prev.frameVersion ? prev.frameVersion + 1 : 1,
-        riskLevel: getRiskLevel(currentCount, threshold),
         timestamp: new Date().toLocaleTimeString(),
-        trendData: generateTrendData(),
-        logs: generateLogs(),
-        alerts: generateAlerts(),
+        trendData: prev.mediaType ? generateTrendData() : [],
+        logs: prev.mediaType ? generateLogs() : [],
+        alerts: prev.mediaType ? generateAlerts() : [],
       }));
     }, 2000);
     return () => clearInterval(interval);
@@ -107,8 +99,25 @@ export function useCrowdData() {
 
   const startProcessing = useCallback(async () => {
     setIsProcessing(true);
-    // Simulate processing
+    // Simulate processing when media is available
     setTimeout(() => {
+      const simulatedCount = Math.floor(120 + Math.random() * 80);
+      setData(prev => ({
+        ...prev,
+        peopleCount: simulatedCount,
+        instantCount: simulatedCount,
+        uniqueCount: Math.floor(simulatedCount * 0.8),
+        harmfulObjectCount: Math.floor(Math.random() * 3),
+        harmfulObjectLabels: ['knife', 'weapon'].slice(0, Math.floor(Math.random() * 3)),
+        frameVersion: prev.frameVersion ? prev.frameVersion + 1 : 1,
+        riskLevel: getRiskLevel(simulatedCount, threshold),
+        timestamp: new Date().toLocaleTimeString(),
+        trendData: generateTrendData(),
+        logs: generateLogs(),
+        alerts: generateAlerts(),
+        counting: true,
+        processingSeconds: 5,
+      }));
       setIsProcessing(false);
     }, 3000);
   }, []);
@@ -118,9 +127,27 @@ export function useCrowdData() {
   }, []);
 
   const uploadMedia = useCallback(async (file: File) => {
-    // Simulate upload
+    // Simulate upload with realistic data
     setIsProcessing(true);
     setTimeout(() => {
+      const simulatedCount = Math.floor(150 + Math.random() * 100);
+      setData(prev => ({
+        ...prev,
+        peopleCount: simulatedCount,
+        instantCount: simulatedCount,
+        uniqueCount: Math.floor(simulatedCount * 0.8),
+        harmfulObjectCount: Math.floor(Math.random() * 3),
+        harmfulObjectLabels: ['knife', 'weapon'].slice(0, Math.floor(Math.random() * 3)),
+        frameVersion: prev.frameVersion ? prev.frameVersion + 1 : 1,
+        riskLevel: getRiskLevel(simulatedCount, threshold),
+        timestamp: new Date().toLocaleTimeString(),
+        trendData: generateTrendData(),
+        logs: generateLogs(),
+        alerts: generateAlerts(),
+        mediaType: file.type.startsWith('video/') ? 'video' : 'image',
+        counting: false,
+        processingSeconds: 3,
+      }));
       setIsProcessing(false);
     }, 2000);
     return true;

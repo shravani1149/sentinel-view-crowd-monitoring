@@ -85,7 +85,7 @@ export function useCrowdData() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch(`http://${window.location.hostname}:5000/stats`);
+      const response = await fetch(`https://${window.location.hostname}:5000/stats`);
       if (response.ok) {
         const stats = await response.json();
         setData(prev => ({
@@ -102,7 +102,7 @@ export function useCrowdData() {
 
   const checkHealth = useCallback(async () => {
     try {
-      const response = await fetch(`http://${window.location.hostname}:5000/health`);
+      const response = await fetch(`https://${window.location.hostname}:5000/health`);
       if (response.ok) {
         const health = await response.json();
         setIsProcessing(health.processing);
@@ -122,7 +122,7 @@ export function useCrowdData() {
 
   const startProcessing = useCallback(async () => {
     try {
-      const response = await fetch(`http://${window.location.hostname}:5000/start`, { method: 'POST' });
+      const response = await fetch(`https://${window.location.hostname}:5000/start`, { method: 'POST' });
       if (response.ok) {
         const payload = await response.json();
         // For images, backend processes immediately and returns counting=false.
@@ -140,7 +140,7 @@ export function useCrowdData() {
 
   const stopProcessing = useCallback(async () => {
     try {
-      const response = await fetch(`http://${window.location.hostname}:5000/stop`, { method: 'POST' });
+      const response = await fetch(`https://${window.location.hostname}:5000/threshold`, { method: 'POST' });
       if (response.ok) setIsProcessing(false);
     } catch (error) {
       console.error('Error stopping processing:', error);
@@ -151,7 +151,7 @@ export function useCrowdData() {
     const formData = new FormData();
     formData.append('media', file);
     try {
-      const response = await fetch(`http://${window.location.hostname}:5000/upload`, {
+      const response = await fetch(`https://${window.location.hostname}:5000/upload`, {
         method: 'POST',
         body: formData,
       });

@@ -15,8 +15,8 @@ const Dashboard = () => {
   const [uploading, setUploading] = useState(false);
   const shouldShowFeed = isProcessing || data.mediaType === 'image';
   const feedSrc = data.mediaType === 'image'
-    ? `http://${window.location.hostname}:5000/latest_frame.jpg?v=${data.frameVersion ?? 0}`
-    : `http://${window.location.hostname}:5000/video_feed`;
+    ? `https://${window.location.hostname}:5000/latest_frame.jpg?v=${data.frameVersion ?? 0}`
+    : `https://${window.location.hostname}:5000/video_feed`;
   
   const showAlert = data.riskLevel === 'danger' && !alertDismissed;
 

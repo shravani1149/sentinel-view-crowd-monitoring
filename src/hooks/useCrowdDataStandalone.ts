@@ -89,16 +89,35 @@ export function useCrowdData() {
     alerts: [],
   }));
 
-  // Only simulate data when media is uploaded
+  // Only simulate data when media is uploaded and processing
   useEffect(() => {
     const interval = setInterval(() => {
-      setData(prev => ({
-        ...prev,
-        timestamp: new Date().toLocaleTimeString(),
-        trendData: prev.mediaType ? generateTrendData() : [],
-        logs: prev.mediaType ? generateLogs() : [],
-        alerts: prev.mediaType ? generateAlerts() : [],
-      }));
+      setData(prev => {
+        // Only update if media is uploaded AND processing is active
+        if (!prev.mediaType || !prev.counting) {
+          return {
+            ...prev,
+            timestamp: new Date().toLocaleTimeString(),
+            trendData: [],
+            logs: [],
+            alerts: [],
+            peopleCount: 0,
+            instantCount: 0,
+            uniqueCount: 0,
+            harmfulObjectCount: 0,
+            harmfulObjectLabels: [],
+            riskLevel: 'safe',
+          };
+        }
+        
+        return {
+          ...prev,
+          timestamp: new Date().toLocaleTimeString(),
+          trendData: generateTrendData(),
+          logs: generateLogs(),
+          alerts: generateAlerts(),
+        };
+      });
     }, 2000);
     return () => clearInterval(interval);
   }, [threshold]);

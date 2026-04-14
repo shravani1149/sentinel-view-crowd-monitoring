@@ -47,12 +47,22 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
         {/* Video Feed */}
         <div className="lg:col-span-2 lg:row-span-2 monitor-card relative overflow-hidden rounded-lg min-h-[400px] bg-black">
-          {shouldShowFeed ? (
-            <img
-              src={feedSrc}
-              alt="Live Feed"
-              className="w-full h-full object-contain"
-            />
+          {shouldShowFeed && feedSrc ? (
+            data.mediaType === 'video' ? (
+              <video
+                src={feedSrc}
+                autoPlay
+                muted
+                loop
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <img
+                src={feedSrc}
+                alt="Live Feed"
+                className="w-full h-full object-contain"
+              />
+            )
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-background via-surface to-background flex items-center justify-center">
               <div className="text-center">

@@ -13,8 +13,9 @@ const Dashboard = () => {
   const [alertDismissed, setAlertDismissed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null);
   const shouldShowFeed = isProcessing || data.mediaType === 'image';
-  const feedSrc = null; // Standalone mode - no external video feed
+  const feedSrc = uploadedVideoUrl; // Show uploaded video
   
   const showAlert = data.riskLevel === 'danger' && !alertDismissed;
 
@@ -23,13 +24,20 @@ const Dashboard = () => {
     if (!file) return;
 
     setUploading(true);
+    
+    // Create video URL for display
+    if (file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      setUploadedVideoUrl(url);
+    }
+    
     const success = await uploadMedia(file);
     setUploading(false);
 
     if (success) {
       toast.success('Media uploaded successfully');
     } else {
-      toast.error('Failed to upload media');
+      toast.error('Upload failed');
     }
   };
 

@@ -23,11 +23,17 @@ export interface CrowdData {
 const generateTrendData = () => {
   const data: { time: string; count: number }[] = [];
   const now = new Date();
+  let baseCount = 50 + Math.floor(Math.random() * 30); // Start with realistic base count
+  
   for (let i = 59; i >= 0; i--) {
     const t = new Date(now.getTime() - i * 60000);
+    // Simulate realistic crowd flow with gradual changes
+    baseCount += Math.floor((Math.random() - 0.5) * 10); // Small changes
+    baseCount = Math.max(20, Math.min(200, baseCount)); // Keep within realistic range
+    
     data.push({
       time: t.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-      count: Math.floor(80 + Math.random() * 120 + Math.sin(i / 8) * 40),
+      count: baseCount,
     });
   }
   return data;
@@ -127,26 +133,33 @@ export function useCrowdData() {
   }, []);
 
   const uploadMedia = useCallback(async (file: File) => {
-    // Simulate upload with realistic data
+    // Simulate upload with realistic data based on file type
     setIsProcessing(true);
     setTimeout(() => {
-      const simulatedCount = Math.floor(150 + Math.random() * 100);
+      // Generate more realistic crowd counts based on file type
+      const isVideo = file.type.startsWith('video/');
+      let baseCount = isVideo ? 80 : 45; // Videos typically have more people
+      let variation = isVideo ? 40 : 25; // More variation in videos
+      
+      const simulatedCount = baseCount + Math.floor(Math.random() * variation);
+      const uniqueCount = Math.floor(simulatedCount * (0.7 + Math.random() * 0.2)); // 70-90% of total
+      
       setData(prev => ({
         ...prev,
         peopleCount: simulatedCount,
         instantCount: simulatedCount,
-        uniqueCount: Math.floor(simulatedCount * 0.8),
-        harmfulObjectCount: Math.floor(Math.random() * 3),
-        harmfulObjectLabels: ['knife', 'weapon'].slice(0, Math.floor(Math.random() * 3)),
+        uniqueCount: uniqueCount,
+        harmfulObjectCount: Math.floor(Math.random() * 2), // Fewer harmful objects for realism
+        harmfulObjectLabels: Math.random() > 0.7 ? ['knife'] : [], // Only sometimes detect objects
         frameVersion: prev.frameVersion ? prev.frameVersion + 1 : 1,
         riskLevel: getRiskLevel(simulatedCount, threshold),
         timestamp: new Date().toLocaleTimeString(),
         trendData: generateTrendData(),
         logs: generateLogs(),
         alerts: generateAlerts(),
-        mediaType: file.type.startsWith('video/') ? 'video' : 'image',
+        mediaType: isVideo ? 'video' : 'image',
         counting: false,
-        processingSeconds: 3,
+        processingSeconds: isVideo ? 4 : 2, // Videos take longer to process
       }));
       setIsProcessing(false);
     }, 2000);

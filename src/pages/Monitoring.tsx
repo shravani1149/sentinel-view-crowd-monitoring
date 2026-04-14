@@ -11,9 +11,7 @@ const Monitoring = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const shouldShowFeed = isProcessing || data.mediaType === 'image';
-  const feedSrc = data.mediaType === 'image'
-    ? `https://e4ax1x5afb.execute-api.ap-south-1.amazonaws.com/prod/latest_frame.jpg?v=${data.frameVersion ?? 0}`
-    : `https://e4ax1x5afb.execute-api.ap-south-1.amazonaws.com/prod/video_feed`;
+  const feedSrc = null; // Standalone mode - no external video feed
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
